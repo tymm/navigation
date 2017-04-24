@@ -32,7 +32,7 @@ package object navigators {
               initialRouteName: OptionalParam[String] = OptDefault,
               initialRouteParams: OptionalParam[js.Object] = OptDefault,
               paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-              navigationOptions: OptionalParam[NavigationScreenOptions] =
+              navigationOptions: OptionalParam[NavigationStackScreenOptions] =
                 OptDefault): StackNavigatorConfig = {
       val p = FunctionObjectMacro()
       p.asInstanceOf[StackNavigatorConfig]
@@ -50,12 +50,12 @@ package object navigators {
   }
 
   @inline
-  def StackNavigator(routes: (String, NavigationRouteConfig)*) =
+  def StackNavigator(routes: (String, NavigationStackScreenRouteConfig)*) =
     StackNavigatorJS(js.Dictionary(routes: _*))
 
   @inline
   def StackNavigator(stackConfig: StackNavigatorConfig,
-                     routes: (String, NavigationRouteConfig)*) =
+                     routes: (String, NavigationStackScreenRouteConfig)*) =
     StackNavigatorJS(js.Dictionary(routes: _*), stackConfig)
 
   @ScalaJSDefined
@@ -69,7 +69,8 @@ package object navigators {
     def apply(
         initialRouteName: OptionalParam[String] = OptDefault,
         paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-        navigationOptions: OptionalParam[NavigationScreenOptions] = OptDefault,
+        navigationOptions: OptionalParam[NavigationTabScreenOptions] =
+          OptDefault,
         order: OptionalParam[js.Array[String]] = OptDefault,
         tabBarComponent: OptionalParam[ReactClass] = OptDefault,
         tabBarPosition: OptionalParam[TabBarPosition] = OptDefault,
@@ -95,12 +96,12 @@ package object navigators {
   }
 
   @inline
-  def TabNavigator(routes: (String, NavigationRouteConfig)*) =
+  def TabNavigator(routes: (String, NavigationTabScreenRouteConfig)*) =
     TabNavigatorJS(js.Dictionary(routes: _*))
 
   @inline
   def TabNavigator(tabConfig: TabNavigatorConfig,
-                   routes: (String, NavigationRouteConfig)*) =
+                   routes: (String, NavigationTabScreenRouteConfig)*) =
     TabNavigatorJS(js.Dictionary(routes: _*), tabConfig)
 
   @ScalaJSDefined
@@ -113,7 +114,7 @@ package object navigators {
     @inline
     def apply(initialRouteName: OptionalParam[String] = OptDefault,
               paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-              navigationOptions: OptionalParam[NavigationScreenOptions] =
+              navigationOptions: OptionalParam[NavigationDrawerScreenOptions] =
                 OptDefault,
               order: OptionalParam[js.Array[String]] = OptDefault,
               drawerWidth: OptionalParam[Double] = OptDefault,
@@ -140,11 +141,11 @@ package object navigators {
   }
 
   @inline
-  def DrawerNavigator(routes: (String, NavigationRouteConfig)*) =
+  def DrawerNavigator(routes: (String, NavigationDrawerScreenRouteConfig)*) =
     DrawerNavigatorJS(js.Dictionary(routes: _*))
 
   @inline
   def DrawerNavigator(tabConfig: DrawerNavigatorConfig,
-                      routes: (String, NavigationRouteConfig)*) =
+                      routes: (String, NavigationDrawerScreenRouteConfig)*) =
     DrawerNavigatorJS(js.Dictionary(routes: _*), tabConfig)
 }

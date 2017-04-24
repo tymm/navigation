@@ -1,7 +1,12 @@
 package sri.navigation
 
 import sri.core.{ReactClass, ReactElement, ReactJSProps}
-import sri.macros.{FunctionObjectMacro, OptDefault, OptionalParam}
+import sri.macros.{
+  FunctionObjectMacro,
+  rename,
+  OptDefault => NoValue,
+  OptionalParam => OP
+}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.literal
@@ -32,8 +37,8 @@ object NavigationRoute {
   @inline
   def apply[Params <: js.Object](key: String,
                                  routeName: String,
-                                 path: OptionalParam[String] = OptDefault,
-                                 params: OptionalParam[Params] = OptDefault,
+                                 path: OP[String] = NoValue,
+                                 params: OP[Params] = NoValue,
                                  index: Double,
                                  routes: js.Array[NavigationRoute[js.Object]])
     : NavigationRoute[Params] = {
@@ -64,34 +69,6 @@ trait NavigationRouter extends js.Object {
 }
 
 @ScalaJSDefined
-trait HeaderConfig extends js.Object {
-  val title: U[String | ReactElement] = undefined
-  val visible: U[Boolean] = undefined
-  val tintColor: U[String] = undefined
-  val backTitle: U[String] = undefined
-  val right: U[ReactElement] = undefined
-  val left: U[ReactElement] = undefined
-  val style: U[js.Any] = undefined
-  val titleStyle: U[js.Any] = undefined
-}
-
-object HeaderConfig {
-  import sri.universal.DangerousUnionToJSAnyImplicit._
-  @inline
-  def apply(title: OptionalParam[String | ReactElement] = OptDefault,
-            visible: OptionalParam[Boolean] = OptDefault,
-            tintColor: OptionalParam[String] = OptDefault,
-            titleStyle: OptionalParam[js.Any] = OptDefault,
-            backTitle: OptionalParam[String] = OptDefault,
-            right: OptionalParam[ReactElement] = OptDefault,
-            left: OptionalParam[ReactElement] = OptDefault,
-            style: OptionalParam[js.Any] = OptDefault): HeaderConfig = {
-    val p = FunctionObjectMacro()
-    p.asInstanceOf[HeaderConfig]
-  }
-}
-
-@ScalaJSDefined
 trait IconOptions extends js.Object {
 
   val tintColor: String
@@ -99,116 +76,68 @@ trait IconOptions extends js.Object {
   val focused: Boolean
 }
 
-object TabBarConfig {
+@ScalaJSDefined
+trait NavigationScreenOptions extends js.Object
+
+@ScalaJSDefined
+trait NavigationStackScreenOptions extends NavigationScreenOptions
+
+object NavigationStackScreenOptions {
   @inline
-  def apply(icon: OptionalParam[IconOptions => ReactElement] = OptDefault,
-            label: OptionalParam[String] = OptDefault): TabBarConfig = {
+  def apply(title: OP[String] = NoValue,
+            headerTitle: OP[String | ReactElement] = NoValue,
+            headerTitleStyle: OP[js.Any] = NoValue,
+            headerStyle: OP[js.Any] = NoValue,
+            headerTintColor: OP[String] = NoValue,
+            headerVisible: OP[Boolean] = NoValue,
+            gesturesEnabled: OP[Boolean] = NoValue,
+            headerBackTitle: OP[String] = NoValue,
+            headerPressColorAndroid: OP[String] = NoValue,
+            headerLeft: OP[ReactElement] = NoValue,
+            headerRight: OP[ReactElement] = NoValue)
+    : NavigationStackScreenOptions = {
+    import sri.universal.DangerousUnionToJSAnyImplicit._
     val p = FunctionObjectMacro()
-    p.asInstanceOf[TabBarConfig]
+    p.asInstanceOf[NavigationStackScreenOptions]
   }
 }
 
 @ScalaJSDefined
-trait TabBarConfig extends js.Object {
-  val icon: U[js.Function1[IconOptions, U[ReactElement]]] =
-    undefined
-  val label: U[String] = undefined
-}
+trait NavigationTabScreenOptions extends NavigationScreenOptions
 
-object DrawerConfig {
+object NavigationTabScreenOptions {
   @inline
-  def apply(icon: OptionalParam[IconOptions => ReactElement] = OptDefault,
-            label: OptionalParam[String] = OptDefault): DrawerConfig = {
+  def apply(
+      title: OP[String] = NoValue,
+      tabBarIcon: OP[IconOptions => ReactElement] = NoValue,
+      tabBarLabel: OP[String | ReactElement] = NoValue,
+      tabBarVisible: OP[Boolean] = NoValue): NavigationTabScreenOptions = {
+    import sri.universal.DangerousUnionToJSAnyImplicit._
     val p = FunctionObjectMacro()
-    p.asInstanceOf[DrawerConfig]
+    p.asInstanceOf[NavigationTabScreenOptions]
   }
 }
 
 @ScalaJSDefined
-trait DrawerConfig extends js.Object {
-  val icon: U[js.Function1[IconOptions, U[ReactElement]]] =
-    undefined
-  val label: U[String] = undefined
-}
+trait NavigationDrawerScreenOptions extends NavigationScreenOptions
 
-object NavigationScreenOptionsImplicits {
-  implicit def ftoJSF1[T <: js.Object, R](
-      in: scala.Function1[NavigationScreenProp[T], R])
-    : OptionalParam[NavigationScreenOption[R, T]] = {
-    in: js.Function1[NavigationScreenProp[T], R]
+object NavigationDrawerScreenOptions {
+  @inline
+  def apply(
+      title: OP[String] = NoValue,
+      drawerIcon: OP[IconOptions => ReactElement] = NoValue,
+      drawerLabel: OP[
+        String | ReactElement | js.Function1[IconOptions, ReactElement]] =
+        NoValue): NavigationDrawerScreenOptions = {
+    import sri.universal.DangerousUnionToJSAnyImplicit._
+    val p = FunctionObjectMacro()
+    p.asInstanceOf[NavigationDrawerScreenOptions]
   }
-
-  implicit def ftoJSF12[T <: js.Object, R](
-      in: scala.Function2[NavigationScreenProp[T], js.Object, R])
-    : OptionalParam[NavigationScreenOption[R, T]] = {
-    in: js.Function2[NavigationScreenProp[T], js.Object, R]
-  }
-
-  implicit def ftoJSF123[T <: js.Object, R](
-      in: scala.Function3[NavigationScreenProp[T],
-                          js.Object,
-                          U[NavigationRouter],
-                          R]): OptionalParam[NavigationScreenOption[R, T]] = {
-    in: js.Function3[NavigationScreenProp[T],
-                     js.Object,
-                     U[NavigationRouter],
-                     R]
-  }
-}
-
-@ScalaJSDefined
-trait NavigationScreenOptions extends js.Object {
-  type Screen <: ScreenClass
-  val title: U[NavigationScreenOption[String, Screen#ParamsType]] = undefined
-  val header: U[NavigationScreenOption[HeaderConfig, Screen#ParamsType]] =
-    undefined
-  val tabBar: U[NavigationScreenOption[TabBarConfig, Screen#ParamsType]] =
-    undefined
-  val drawer: U[NavigationScreenOption[DrawerConfig, Screen#ParamsType]] =
-    undefined
 }
 
 @ScalaJSDefined
 trait GenericScreen extends ScreenClass {
   override type ParamsType = js.Object
-}
-
-object NavigationScreenOptions {
-  import sri.universal.DangerousUnionToJSAnyImplicit._
-
-  @inline
-  def apply[S <: ScreenClass](
-      title: OptionalParam[NavigationScreenOption[String, S#ParamsType]] =
-        OptDefault,
-      header: OptionalParam[NavigationScreenOption[HeaderConfig, S#ParamsType]] =
-        OptDefault,
-      tabBar: OptionalParam[NavigationScreenOption[TabBarConfig, S#ParamsType]] =
-        OptDefault,
-      drawer: OptionalParam[NavigationScreenOption[DrawerConfig, S#ParamsType]] =
-        OptDefault): NavigationScreenOptions { type Screen = S } = {
-    val p = FunctionObjectMacro()
-    p.asInstanceOf[NavigationScreenOptions { type Screen = S }]
-  }
-}
-
-@ScalaJSDefined
-trait NavigationScreenConfig extends js.Object {
-  val title: U[String] = undefined
-  val header: U[HeaderConfig] = undefined
-  val tabBar: U[TabBarConfig] = undefined
-  val drawer: U[DrawerConfig] = undefined
-}
-
-object NavigationScreenConfig {
-  @inline
-  def apply(title: OptionalParam[String] = OptDefault,
-            header: OptionalParam[HeaderConfig] = OptDefault,
-            tabBar: OptionalParam[TabBarConfig] = OptDefault,
-            drawer: OptionalParam[DrawerConfig] = OptDefault)
-    : NavigationScreenConfig = {
-    val p = FunctionObjectMacro()
-    p.asInstanceOf[NavigationScreenConfig]
-  }
 }
 
 //@ScalaJSDefined
@@ -293,8 +222,7 @@ trait NavigationContainerOptions extends js.Object {
 
 object NavigationContainerOptions {
   @inline
-  def apply(URIPrefix: OptionalParam[String] = OptDefault)
-    : NavigationContainerOptions = {
+  def apply(URIPrefix: OP[String] = NoValue): NavigationContainerOptions = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationContainerOptions]
   }
@@ -307,8 +235,7 @@ trait NavigationContainerConfig extends js.Object {
 
 object NavigationContainerConfig {
   @inline
-  def apply(
-      containerOptions: OptionalParam[NavigationContainerOptions] = OptDefault)
+  def apply(containerOptions: OP[NavigationContainerOptions] = NoValue)
     : NavigationContainerConfig = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationContainerConfig]
@@ -345,10 +272,10 @@ trait NavigationStackViewConfig extends js.Object {
 
 object NavigationStackViewConfig {
   @inline
-  def apply(mode: OptionalParam[NavigationStackViewConfigMode] = OptDefault,
-            headerMode: OptionalParam[HeaderMode] = OptDefault,
-            headerComponent: OptionalParam[js.Object] = OptDefault)
-    : NavigationStackViewConfig = {
+  def apply(
+      mode: OP[NavigationStackViewConfigMode] = NoValue,
+      headerMode: OP[HeaderMode] = NoValue,
+      headerComponent: OP[js.Object] = NoValue): NavigationStackViewConfig = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationStackViewConfig]
   }
@@ -359,16 +286,16 @@ trait NavigationStackRouterConfig extends js.Object {
   val initialRouteName: U[String] = undefined
   val initialRouteParams: U[NavigationParams] = undefined
   val paths: U[NavigationPathsConfig] = undefined
-  val navigationOptions: U[NavigationScreenOptions] = undefined
+  val navigationOptions: U[NavigationStackScreenOptions] = undefined
 }
 
 object NavigationStackRouterConfig {
   @inline
-  def apply(initialRouteName: OptionalParam[String] = OptDefault,
-            initialRouteParams: OptionalParam[NavigationParams] = OptDefault,
-            paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-            navigationOptions: OptionalParam[NavigationScreenOptions] =
-              OptDefault): NavigationStackRouterConfig = {
+  def apply(initialRouteName: OP[String] = NoValue,
+            initialRouteParams: OP[NavigationParams] = NoValue,
+            paths: OP[NavigationPathsConfig] = NoValue,
+            navigationOptions: OP[NavigationStackScreenOptions] = NoValue)
+    : NavigationStackRouterConfig = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationStackRouterConfig]
   }
@@ -377,33 +304,39 @@ object NavigationStackRouterConfig {
 @ScalaJSDefined
 trait NavigationScreenRouteConfig extends js.Object {
   var screen: js.Any //TODO fix this
-  var navigationOptions: U[NavigationScreenOptions] = undefined
   var path: U[String] = undefined
+  val navigationOptions: NavigationScreenOptions
 }
+
+@ScalaJSDefined
+trait NavigationStackScreenRouteConfig extends NavigationScreenRouteConfig
+
+@ScalaJSDefined
+trait NavigationTabScreenRouteConfig extends NavigationScreenRouteConfig
+
+@ScalaJSDefined
+trait NavigationDrawerScreenRouteConfig extends NavigationScreenRouteConfig
 
 object NavigationScreenRouteConfig {
   @inline
-  def apply(screen: js.Any,
-            path: OptionalParam[String] = OptDefault,
-            navigationOptions: OptionalParam[NavigationScreenOptions])
+  def apply[T <: NavigationScreenOptions, C <: ScreenClass](
+      screen: js.Any,
+      path: OP[String] = NoValue,
+      navigationOptions: OP[T],
+      @rename("navigationOptions") navigationOptionsDynamic: OP[
+        NavigationScreenConfigProps[C] => T] = NoValue)
     : NavigationScreenRouteConfig = {
+    import sri.universal.DangerousUnionToJSAnyImplicit._
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationScreenRouteConfig]
   }
 }
 
 @ScalaJSDefined
-trait NavigationScreenRouteConfigVal extends js.Object {
-  val screen: NavigationScreenComponent[_, _] | NavigationNavigator[_]
-  val navigationOptions: U[NavigationScreenOptions] = undefined
-  val path: U[String] = undefined
-}
-
-@ScalaJSDefined
 trait NavigationLazyScreenRouteConfig extends js.Object {
   val getScreen: js.Function0[NavigationScreenComponent[_, _]] | NavigationNavigator[
     _]
-  val navigationOptions: U[NavigationScreenOptions] = undefined
+  val navigationOptions: U[NavigationStackScreenOptions] = undefined
   val path: U[String] = undefined
 }
 
@@ -413,9 +346,8 @@ object NavigationLazyScreenRouteConfig {
   def apply(
       getScreen: js.Function0[NavigationScreenComponent[_, _]] | NavigationNavigator[
         _],
-      navigationOptions: OptionalParam[NavigationScreenOptions] = OptDefault,
-      path: OptionalParam[String] = OptDefault)
-    : NavigationLazyScreenRouteConfig = {
+      navigationOptions: OP[NavigationStackScreenOptions] = NoValue,
+      path: OP[String] = NoValue): NavigationLazyScreenRouteConfig = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationLazyScreenRouteConfig]
   }
@@ -424,18 +356,17 @@ object NavigationLazyScreenRouteConfig {
 trait NavigationTabRouterConfig extends js.Object {
   val initialRouteName: U[String] = undefined
   val paths: U[NavigationPathsConfig] = undefined
-  val navigationOptions: U[NavigationScreenOptions] = undefined
+  val navigationOptions: U[NavigationTabScreenOptions] = undefined
   val order: U[js.Array[String]] = undefined
 }
 
 object NavigationTabRouterConfig {
   @inline
-  def apply(initialRouteName: OptionalParam[String] = OptDefault,
-            paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-            navigationOptions: OptionalParam[NavigationScreenOptions] =
-              OptDefault,
-            order: OptionalParam[js.Array[String]] = OptDefault)
-    : NavigationTabRouterConfig = {
+  def apply(
+      initialRouteName: OP[String] = NoValue,
+      paths: OP[NavigationPathsConfig] = NoValue,
+      navigationOptions: OP[NavigationTabScreenOptions] = NoValue,
+      order: OP[js.Array[String]] = NoValue): NavigationTabRouterConfig = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationTabRouterConfig]
   }
@@ -448,8 +379,16 @@ trait NavigationProp[S] extends js.Object {
 }
 
 @js.native
+trait NavigationScreenConfigProps[C <: ScreenClass] extends js.Object {
+  val navigation: Navigation[C#ParamsType] = js.native
+  val screenProps: js.Object = js.native
+  val navigationOptions: NavigationScreenOptions = js.native
+}
+
+@js.native
 trait NavigatorScreenProps[P <: js.Object] extends ReactJSProps {
   val navigation: NavigationScreenProp[P] = js.native
+  val screenProps: js.Object = js.native
 }
 
 @js.native
@@ -467,7 +406,16 @@ trait NavigationScreenProp[P <: js.Object] extends js.Object {
 @ScalaJSDefined
 trait NavigationNavigatorProps extends js.Object {
   val navigation: NavigationProp[NavigationState]
-  val router: NavigationRouter
+  val screenProps: js.Object
+  val navigationOptions: js.Object
+}
+
+object NavigationNavigatorProps {
+  @inline
+  def apply(screenProps: OP[js.Object] = NoValue): NavigationNavigatorProps = {
+    val p = FunctionObjectMacro()
+    p.asInstanceOf[NavigationNavigatorProps]
+  }
 }
 
 @ScalaJSDefined
@@ -528,11 +476,11 @@ trait NavigationTransitionSpec extends js.Object {
 object NavigationTransitionSpec {
   @inline
   def apply(
-      duration: OptionalParam[Double] = OptDefault,
-      easing: OptionalParam[js.Function0[js.Any]] = OptDefault,
-      timing: OptionalParam[
+      duration: OP[Double] = NoValue,
+      easing: OP[js.Function0[js.Any]] = NoValue,
+      timing: OP[
         (NavigationAnimatedValue /*value*/, js.Any /*config*/ ) => js.Any] =
-        OptDefault): NavigationTransitionSpec = {
+        NoValue): NavigationTransitionSpec = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[NavigationTransitionSpec]
   }
@@ -564,8 +512,8 @@ trait TabBarOptions extends js.Object {
 
 object TabBarOptions {
   @inline
-  def apply(activeTintColor: OptionalParam[String] = OptDefault,
-            showIcon: OptionalParam[Boolean] = OptDefault): TabBarOptions = {
+  def apply(activeTintColor: OP[String] = NoValue,
+            showIcon: OP[Boolean] = NoValue): TabBarOptions = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[TabBarOptions]
   }
@@ -582,12 +530,12 @@ trait TabViewConfig extends js.Object {
 
 object TabViewConfig {
   @inline
-  def apply(tabBarComponent: OptionalParam[ReactClass] = OptDefault,
-            tabBarPosition: OptionalParam[TabBarPosition] = OptDefault,
-            tabBarOptions: OptionalParam[js.Object] = OptDefault,
-            swipeEnabled: OptionalParam[Boolean] = OptDefault,
-            animationEnabled: OptionalParam[Boolean] = OptDefault,
-            lazyLoad: OptionalParam[Boolean] = OptDefault): TabViewConfig = {
+  def apply(tabBarComponent: OP[ReactClass] = NoValue,
+            tabBarPosition: OP[TabBarPosition] = NoValue,
+            tabBarOptions: OP[js.Object] = NoValue,
+            swipeEnabled: OP[Boolean] = NoValue,
+            animationEnabled: OP[Boolean] = NoValue,
+            lazyLoad: OP[Boolean] = NoValue): TabViewConfig = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[TabViewConfig]
   }
@@ -613,12 +561,11 @@ trait DrawerContentOptions extends js.Object {
 
 object DrawerContentOptions {
   @inline
-  def apply(
-      activeTintColor: OptionalParam[String] = OptDefault,
-      activeBackgroundColor: OptionalParam[String] = OptDefault,
-      inactiveTintColor: OptionalParam[String] = OptDefault,
-      inactiveBackgroundColor: OptionalParam[String] = OptDefault,
-      style: OptionalParam[js.Any] = OptDefault): DrawerContentOptions = {
+  def apply(activeTintColor: OP[String] = NoValue,
+            activeBackgroundColor: OP[String] = NoValue,
+            inactiveTintColor: OP[String] = NoValue,
+            inactiveBackgroundColor: OP[String] = NoValue,
+            style: OP[js.Any] = NoValue): DrawerContentOptions = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[DrawerContentOptions]
   }
@@ -635,11 +582,11 @@ trait DrawerViewConfig extends js.Object {
 
 object DrawerViewConfig {
   @inline
-  def apply(drawerWidth: OptionalParam[Double] = OptDefault,
-            drawerPosition: OptionalParam[DrawerPosition] = OptDefault,
-            contentComponent: OptionalParam[ReactClass] = OptDefault,
-            contentOptions: OptionalParam[js.Object] = OptDefault,
-            style: OptionalParam[js.Any] = OptDefault): DrawerViewConfig = {
+  def apply(drawerWidth: OP[Double] = NoValue,
+            drawerPosition: OP[DrawerPosition] = NoValue,
+            contentComponent: OP[ReactClass] = NoValue,
+            contentOptions: OP[js.Object] = NoValue,
+            style: OP[js.Any] = NoValue): DrawerViewConfig = {
     val p = FunctionObjectMacro()
     p.asInstanceOf[DrawerViewConfig]
   }

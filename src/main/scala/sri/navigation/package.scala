@@ -3,6 +3,7 @@ package sri
 import sri.core.{ComponentConstructor, React, ReactElement}
 import sri.macros.{OptDefault, OptionalParam}
 import sri.navigation.navigators.NavigationNavigatorConstructor
+import sri.universal.PropTypes
 import sri.universal.apis.AnimatedValue
 
 import scala.reflect.ClassTag
@@ -29,7 +30,7 @@ package object navigation {
 
   type NavigationPathsConfig = js.Dictionary[String]
 
-  type NavigationRouteConfigMap = js.Dictionary[NavigationRouteConfig]
+  type NavigationRouteConfigMap = js.Dictionary[NavigationScreenRouteConfig]
 
   type NavigationComponent =
     NavigationScreenComponentConstructor | NavigationNavigatorConstructor
@@ -57,20 +58,57 @@ package object navigation {
   type Navigation[P <: js.Object] = NavigationScreenProp[P]
 
   @inline
-  def registerScreen[C <: NavigationScreenComponent[_, _]: ConstructorTag](
-      implicit ctag: ClassTag[C]): (String, NavigationRouteConfig) = {
-    registerRoute(ctag.runtimeClass.getName, js.constructorTag[C].constructor)
-  }
-
-  @inline
-  def registerScreen[C <: NavigationScreenComponent[_, _]: ConstructorTag](
+  def registerStackScreen[
+      C <: NavigationScreenComponent[_ <: js.Object, _]: ConstructorTag](
       path: OptionalParam[String] = OptDefault,
-      navigationOptions: OptionalParam[NavigationScreenOptions] = OptDefault)(
-      implicit ctag: ClassTag[C]): (String, NavigationRouteConfig) = {
+      navigationOptions: OptionalParam[NavigationStackScreenOptions] =
+        OptDefault,
+      navigationOptionsDynamic: OptionalParam[
+        NavigationScreenConfigProps[C] => NavigationStackScreenOptions] =
+        OptDefault)(implicit ctag: ClassTag[C])
+    : (String, NavigationStackScreenRouteConfig) = {
     registerRoute(ctag.runtimeClass.getName,
                   js.constructorTag[C].constructor,
                   path,
-                  navigationOptions)
+                  navigationOptions,
+                  navigationOptionsDynamic)
+      .asInstanceOf[(String, NavigationStackScreenRouteConfig)]
+
+  }
+
+  @inline
+  def registerTabScreen[C <: NavigationScreenComponent[_, _]: ConstructorTag](
+      path: OptionalParam[String] = OptDefault,
+      navigationOptions: OptionalParam[NavigationTabScreenOptions] = OptDefault,
+      navigationOptionsDynamic: OptionalParam[
+        NavigationScreenConfigProps[C] => NavigationTabScreenOptions] =
+        OptDefault)(
+      implicit ctag: ClassTag[C]): (String, NavigationTabScreenRouteConfig) = {
+    registerRoute(ctag.runtimeClass.getName,
+                  js.constructorTag[C].constructor,
+                  path,
+                  navigationOptions,
+                  navigationOptionsDynamic)
+      .asInstanceOf[(String, NavigationTabScreenRouteConfig)]
+
+  }
+
+  @inline
+  def registerDrawerScreen[
+      C <: NavigationScreenComponent[_, _]: ConstructorTag](
+      path: OptionalParam[String] = OptDefault,
+      navigationOptions: OptionalParam[NavigationDrawerScreenOptions] =
+        OptDefault,
+      navigationOptionsDynamic: OptionalParam[
+        NavigationScreenConfigProps[C] => NavigationTabScreenOptions] =
+        OptDefault)(implicit ctag: ClassTag[C])
+    : (String, NavigationDrawerScreenRouteConfig) = {
+    registerRoute(ctag.runtimeClass.getName,
+                  js.constructorTag[C].constructor,
+                  path,
+                  navigationOptions,
+                  navigationOptionsDynamic)
+      .asInstanceOf[(String, NavigationDrawerScreenRouteConfig)]
 
   }
 
@@ -87,15 +125,19 @@ package object navigation {
                   navigationOptions = navigationOptions)
 
   @inline
-  private def registerRoute(
+  private def registerRoute[T <: NavigationScreenOptions, C <: ScreenClass](
       name: String,
       comp: js.Any,
       path: OptionalParam[String] = OptDefault,
-      navigationOptions: OptionalParam[NavigationScreenOptions] = OptDefault)
+      navigationOptions: OptionalParam[T] = OptDefault,
+      navigationOptionsDynamic: OptionalParam[
+        NavigationScreenConfigProps[C] => T] = OptDefault)
     : (String, NavigationRouteConfig) =
     name -> NavigationScreenRouteConfig(screen = comp,
                                         path = path,
-                                        navigationOptions = navigationOptions)
+                                        navigationOptions = navigationOptions,
+                                        navigationOptionsDynamic =
+                                          navigationOptionsDynamic)
 
   @inline
   def getScreenName[C <: NavigationScreenComponent[_, _]: ConstructorTag](
@@ -121,6 +163,6 @@ package object navigation {
       .asInstanceOf[NavigationScreenComponentConstructor]
 
   val navigationContextType =
-    js.Dictionary("navigation" -> React.PropTypes.`object`.isRequired)
+    js.Dictionary("navigation" -> PropTypes.`object`.isRequired)
 
 }

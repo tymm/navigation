@@ -15,7 +15,7 @@ package object routers {
     def apply(initialRouteName: OptionalParam[String] = OptDefault,
               initialRouteParams: OptionalParam[js.Object] = OptDefault,
               paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-              navigationOptions: OptionalParam[NavigationScreenOptions] =
+              navigationOptions: OptionalParam[NavigationStackScreenOptions] =
                 OptDefault): StackRouterConfig = {
       val p = FunctionObjectMacro()
       p.asInstanceOf[StackRouterConfig]
@@ -32,12 +32,12 @@ package object routers {
   }
 
   @inline
-  def StackRouter(routes: (String, NavigationRouteConfig)*) =
+  def StackRouter(routes: (String, NavigationScreenRouteConfig)*) =
     StackRouterJS(js.Dictionary(routes: _*))
 
   @inline
   def StackRouter(stackConfig: StackRouterConfig,
-                  routes: (String, NavigationRouteConfig)*) =
+                  routes: (String, NavigationScreenRouteConfig)*) =
     StackRouterJS(js.Dictionary(routes: _*), stackConfig)
 
   @ScalaJSDefined
@@ -49,7 +49,7 @@ package object routers {
               initialRouteParams: OptionalParam[js.Object] = OptDefault,
               backBehavior: OptionalParam[String] = OptDefault,
               paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-              navigationOptions: OptionalParam[NavigationScreenOptions] =
+              navigationOptions: OptionalParam[NavigationTabScreenOptions] =
                 OptDefault): TabRouterConfig = {
       val p = FunctionObjectMacro()
       p.asInstanceOf[TabRouterConfig]
@@ -65,11 +65,11 @@ package object routers {
   }
 
   @inline
-  def TabRouter(routes: (String, NavigationRouteConfig)*) =
+  def TabRouter(routes: (String, NavigationScreenRouteConfig)*) =
     TabRouterJS(js.Dictionary(routes: _*))
 
   @inline
   def TabRouter(tabConfig: TabRouterConfig,
-                routes: (String, NavigationRouteConfig)*) =
+                routes: (String, NavigationScreenRouteConfig)*) =
     TabRouterJS(js.Dictionary(routes: _*), tabConfig)
 }
