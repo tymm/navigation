@@ -6,12 +6,11 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 @js.native
-@JSImport("react-navigation", "DrawerView.Items")
-object DrawerViewItemsComponent extends JSComponent[js.Object]
+@JSImport("react-navigation", "DrawerItems")
+object DrawerItemsComponent extends JSComponent[js.Object]
 
-object DrawerViewItems {
+object DrawerItems {
   @inline
   def apply(props: Navigation[_]) =
-    CreateElementJS[DrawerViewItemsComponent.type](DrawerViewItemsComponent,
-                                                   props)
+    CreateElementJS[DrawerItemsComponent.type](DrawerItemsComponent, props)
 }

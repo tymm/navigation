@@ -85,6 +85,9 @@ trait NavigationStackScreenOptions extends NavigationScreenOptions
 object NavigationStackScreenOptions {
   @inline
   def apply(title: OP[String] = NoValue,
+            header: OP[ReactElement] = NoValue,
+            @rename("header") headerDyanmic: OP[HeaderProps => ReactElement] =
+              NoValue,
             headerTitle: OP[String | ReactElement] = NoValue,
             headerTitleStyle: OP[js.Any] = NoValue,
             headerStyle: OP[js.Any] = NoValue,
@@ -590,4 +593,20 @@ object DrawerViewConfig {
     val p = FunctionObjectMacro()
     p.asInstanceOf[DrawerViewConfig]
   }
+}
+
+@ScalaJSDefined
+trait NavigationScreenDetails[T <: js.Object] extends js.Object {
+  val options: T
+  val state: NavigationRoute[js.Object]
+  val navigation: Navigation[js.Object]
+}
+
+@ScalaJSDefined
+trait HeaderProps extends NavigationTransitionProps {
+  val mode: HeaderMode
+  val router: NavigationRouter
+  val getScreenDetails: js.Function1[
+    NavigationScene,
+    NavigationScreenDetails[NavigationStackScreenOptions]]
 }

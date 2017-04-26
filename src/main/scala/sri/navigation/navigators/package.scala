@@ -21,9 +21,7 @@ package object navigators {
 
   object StackNavigatorConfig {
     @inline
-    def apply(containerOptions: OptionalParam[NavigationContainerOptions] =
-                OptDefault,
-              mode: OptionalParam[NavigationStackViewConfigMode] = OptDefault,
+    def apply(mode: OptionalParam[NavigationStackViewConfigMode] = OptDefault,
               headerMode: OptionalParam[HeaderMode] = OptDefault,
               cardStyle: OptionalParam[js.Any] = OptDefault,
               onTransitionStart: OptionalParam[() => _] = OptDefault,
@@ -68,6 +66,7 @@ package object navigators {
     @inline
     def apply(
         initialRouteName: OptionalParam[String] = OptDefault,
+        iconStyle: OptionalParam[js.Any] = OptDefault,
         paths: OptionalParam[NavigationPathsConfig] = OptDefault,
         navigationOptions: OptionalParam[NavigationTabScreenOptions] =
           OptDefault,
@@ -77,9 +76,7 @@ package object navigators {
         tabBarOptions: OptionalParam[js.Object] = OptDefault,
         swipeEnabled: OptionalParam[Boolean] = OptDefault,
         animationEnabled: OptionalParam[Boolean] = OptDefault,
-        containerOptions: OptionalParam[NavigationContainerOptions] =
-          OptDefault,
-        lazyLoad: OptionalParam[Boolean] = OptDefault): TabNavigatorConfig = {
+        `lazy`: OptionalParam[Boolean] = OptDefault): TabNavigatorConfig = {
       val p = FunctionObjectMacro()
       p.asInstanceOf[TabNavigatorConfig]
     }
@@ -112,19 +109,19 @@ package object navigators {
 
   object DrawerNavigatorConfig {
     @inline
-    def apply(initialRouteName: OptionalParam[String] = OptDefault,
-              paths: OptionalParam[NavigationPathsConfig] = OptDefault,
-              navigationOptions: OptionalParam[NavigationDrawerScreenOptions] =
-                OptDefault,
-              order: OptionalParam[js.Array[String]] = OptDefault,
-              drawerWidth: OptionalParam[Double] = OptDefault,
-              drawerPosition: OptionalParam[DrawerPosition] = OptDefault,
-              contentComponent: OptionalParam[Navigation[_] => ReactElement] =
-                OptDefault,
-              contentOptions: OptionalParam[js.Object] = OptDefault,
-              style: OptionalParam[js.Any] = OptDefault,
-              containerOptions: OptionalParam[NavigationContainerOptions] =
-                OptDefault): DrawerNavigatorConfig = {
+    def apply(
+        initialRouteName: OptionalParam[String] = OptDefault,
+        labelStyle: OptionalParam[js.Any] = OptDefault,
+        paths: OptionalParam[NavigationPathsConfig] = OptDefault,
+        navigationOptions: OptionalParam[NavigationDrawerScreenOptions] =
+          OptDefault,
+        order: OptionalParam[js.Array[String]] = OptDefault,
+        drawerWidth: OptionalParam[Double] = OptDefault,
+        drawerPosition: OptionalParam[DrawerPosition] = OptDefault,
+        contentComponent: OptionalParam[Navigation[_] => ReactElement] =
+          OptDefault,
+        contentOptions: OptionalParam[js.Object] = OptDefault,
+        style: OptionalParam[js.Any] = OptDefault): DrawerNavigatorConfig = {
       val p = FunctionObjectMacro()
       p.asInstanceOf[DrawerNavigatorConfig]
     }
