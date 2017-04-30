@@ -19,6 +19,15 @@ package object navigators {
       with NavigationStackViewConfig
       with NavigationStackRouterConfig
 
+  @js.native
+  trait NavigationContainer
+    extends NavigationNavigatorConstructor {
+
+    val router: NavigationRouter = js.native
+
+    def dispatch(action: NavigationAction): Boolean = js.native
+  }
+
   object StackNavigatorConfig {
     @inline
     def apply(mode: OptionalParam[NavigationStackViewConfigMode] = OptDefault,
@@ -43,7 +52,7 @@ package object navigators {
 
     def apply(routeConfigMap: NavigationRouteConfigMap,
               stackConfig: StackNavigatorConfig = ???)
-      : NavigationNavigatorConstructor =
+      : NavigationContainer =
       js.native
   }
 
